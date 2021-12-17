@@ -1,18 +1,25 @@
 <template>
-  <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js + TypeScript App"/>
+  <div class="content">
+    <Todo todo-description="Hello there!" todo-title="Абоба" />
   </div>
 </template>
 
-<script lang="ts">
+<script >
 import { defineComponent } from 'vue';
-import HelloWorld from '@/components/HelloWorld.vue'; // @ is an alias to /src
+import Todo from '@/components/Todo.vue';
 
 export default defineComponent({
   name: 'Home',
   components: {
-    HelloWorld,
-  },
+    Todo
+  }
 });
 </script>
+
+<style lang="scss">
+@import '../assets/styles/colors.scss';
+
+.content {
+  padding: 0 64px;
+}
+</style>
