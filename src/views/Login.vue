@@ -17,6 +17,7 @@
         type="password"
         name="password"
         id="password"
+        minlength="3"
       />
       <input
         @click.prevent="onSubmit"
@@ -33,7 +34,7 @@
 
 <script>
 import { defineComponent } from 'vue';
-import { doLogin } from '@/netClient/dataService.js';
+import { doLogin } from '@/netClient/authService.js';
 
 export default defineComponent({
   data() {
@@ -45,13 +46,11 @@ export default defineComponent({
   methods: {
     async onSubmit() {
       const user = { email: this.email, password: this.password };
-      const response = await doLogin(user);
-      // console.log(response);
       try {
-        await doLogin(user)
-        console.log('blyat');
+        await doLogin(user);
+        this.$router.push('/');
       } catch (error) {
-        console.log('aboba');
+        console.log({error});
       }
     }
   }

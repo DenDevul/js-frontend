@@ -39,9 +39,9 @@
   </div>
 </template>
 
-<script >
+<script>
 import { defineComponent } from 'vue';
-import { doSignup } from '@/netClient/dataService.js';
+import { doSignup } from '@/netClient/authService.js';
 
 export default defineComponent({
   data() {
@@ -58,8 +58,12 @@ export default defineComponent({
         password: this.password,
         login: this.login
       };
-      await doSignup(user);
-      this.$router.push('login');
+      try {
+        await doSignup(user);
+        this.$router.push('login');
+      } catch (error) {
+        console.log({error});
+      }
     }
   }
 });

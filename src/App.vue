@@ -1,11 +1,10 @@
 <template>
   <div id="nav">
-    <div class="navbar">
-      <!-- <router-link v-if="this.$route.name === 'login'" class="navbar-item" to="login">Войти</router-link> -->
-      <router-link @click="signout" class="navbar-item" to="login">Выйти</router-link>
-    </div>
     <div @click="toHome" class="logo"><p>Todo</p></div>
-    <div class="navbar-end"></div>
+    <div class="nav-items">
+      <router-link @click="signout" class="nav-link" to="login">Выйти</router-link>
+      <router-link class="nav-link" to="info">Инфо</router-link>
+    </div>
   </div>
   <div class="content">
     <router-view>
@@ -16,7 +15,7 @@
 
 <script >
 import { defineComponent } from 'vue';
-import {doLogout} from '@/netClient/dataService.js'
+import {doLogout} from '@/netClient/authService.js'
 
 export default defineComponent({
   name: 'App',
@@ -43,7 +42,7 @@ export default defineComponent({
   background: $bg-color;
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  justify-content: start;
   align-items: center;
   top: 0;
   position: fixed;
@@ -51,19 +50,21 @@ export default defineComponent({
   box-shadow: 0px 0px 10px black;
   z-index: 2;
   
-  .navbar {
+  .nav-items {
     font-family: 'Ubuntu', sans-serif;
-    .navbar-item {
+    .nav-link {
       padding: 5px;
       border-radius: 4px;
-      text-decoration: none;
-      color: black;
       background: white;
+      color: black;
+      text-decoration: none;
+      margin-right: 16px;
     }
   }
 
   .logo {
     height: 44px;
+    margin-right: 32px;
     background: $primary-color;
     border-radius: 20px;
     padding: 0 0.7rem;
@@ -81,5 +82,7 @@ export default defineComponent({
 .content {
   margin-top: 88px;
   width: 100vw;
+  display: flex;
+  justify-content: center;
 }
 </style>

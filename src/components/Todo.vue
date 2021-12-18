@@ -1,6 +1,8 @@
 <template>
   <div class="card">
     <div class="title">
+      <p>{{this.id}}</p>
+      <p>{{this.title}}</p>
       <h1 @click="editTodo">{{ todoTitle }}</h1>
       <!-- <textarea type="text" v-model="this.title"></textarea> -->
       <span class="material-icons-outlined"> star_border </span>
@@ -11,24 +13,39 @@
   </div>
 </template>
 
-<script lang="ts">
+<script>
 import { defineComponent } from 'vue';
+// import {  } from '@/netClient/todoService';
 
 export default defineComponent({
   name: 'Todo',
   props: {
+    todoCreatedAt: String,
+    todoDescription: String,
+    todoId: String,
+    todoIsCompleted: Boolean,
+    todoIsFavourite: Boolean,
+    todoPriority: Number,
     todoTitle: String,
-    todoDescription: String
+    todoUpdatedAt: String,
+    todoUserId: String
   },
   methods: {
     editTodo() {
-      return 1
+      return 1;
     }
   },
   data() {
     return {
+      createdAt: this.todoCreatedAt,
+      description: this.todoDescription,
+      id: this.todoId,
+      isCompleted: this.todoIsCompleted,
+      isFavourite: this.todoIsFavourite,
+      priority: this.todoPriority,
       title: this.todoTitle,
-      description: this.todoDescription
+      updatedAt: this.todoUpdatedAt,
+      userId: this.todoUserId
     };
   }
 });
