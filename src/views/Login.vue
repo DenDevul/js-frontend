@@ -50,7 +50,7 @@ export default defineComponent({
         await doLogin(user);
         this.$router.push('/');
       } catch (error) {
-        console.log({error});
+        alert(error)
       }
     }
   }

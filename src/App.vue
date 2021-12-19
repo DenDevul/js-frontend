@@ -2,7 +2,7 @@
   <div id="nav">
     <div @click="toHome" class="logo"><p>Todo</p></div>
     <div class="nav-items">
-      <router-link @click="signout" class="nav-link" to="login">Выйти</router-link>
+      <router-link @click="logout" class="nav-link" to="login">Выйти</router-link>
       <router-link class="nav-link" to="info">Инфо</router-link>
     </div>
   </div>
@@ -21,11 +21,17 @@ export default defineComponent({
   name: 'App',
   methods: {
     toHome() {
-      this.$router.push('/')
+      const {accessToken} = localStorage
+      if (accessToken) this.$router.push({name: 'home'})
+      else this.$router.push({name: 'login'})
     },
     async logout() {
-      await doLogout()
-      this.$router.push('login')      
+      try {
+        await doLogout()
+        this.$router.push({name: 'login'})      
+      } catch (error) {
+        return 1
+      }
     }
   }
 });
@@ -46,7 +52,7 @@ export default defineComponent({
   align-items: center;
   top: 0;
   position: fixed;
-  width: 100vw;
+  width: 100%;
   box-shadow: 0px 0px 10px black;
   z-index: 2;
   
@@ -81,7 +87,7 @@ export default defineComponent({
 
 .content {
   margin-top: 88px;
-  width: 100vw;
+  width: 100%;
   display: flex;
   justify-content: center;
 }

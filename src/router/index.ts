@@ -1,9 +1,9 @@
-import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router'
+import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 import Home from '../views/Home.vue'
 
 const routes: Array<RouteRecordRaw> = [
   {
-    path: '/',
+    path: '/home',
     name: 'home',
     component: Home
   },
@@ -16,21 +16,29 @@ const routes: Array<RouteRecordRaw> = [
     path: '/signup',
     name: 'signup',
     component: () => import ('../views/Signup.vue')
+  },
+  {
+    path: '/info',
+    redirect: '/login'
+  },
+  {
+    path: '/:pathMatch(.*)*',
+    redirect: '/home'
   }
 ]
 
 const router = createRouter({
-  history: createWebHashHistory(),
+  history: createWebHistory(),
   routes
 })
 
 router.beforeEach((to, from, next) => {
   const {accessToken} = localStorage
   
-  if(accessToken || to.name === 'login' || to.name === 'signup') {
+  if(accessToken || to.name === 'login' || to.name === 'signup' || to.path === '/info') {
     next()
   } else {
-    next('/login')
+    next({name: 'login'})
   }
   
 })

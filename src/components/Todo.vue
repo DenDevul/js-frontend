@@ -1,52 +1,92 @@
 <template>
-  <div class="card">
-    <div class="title">
-      <p>{{this.id}}</p>
-      <p>{{this.title}}</p>
-      <h1 @click="editTodo">{{ todoTitle }}</h1>
-      <!-- <textarea type="text" v-model="this.title"></textarea> -->
-      <span class="material-icons-outlined"> star_border </span>
-      <span class="material-icons-outlined"> clear </span>
-    </div>
-    <p @click="editTodo">{{ todoDescription }}</p>
-    <!-- <textarea type="text" v-model="this.description"></textarea> -->
+  <div ref="todo" class="card">
+    <textarea
+      @input="onInput"
+      @click="startEdit"
+      @blur="stopEdit"
+      ref="title"
+      type="text"
+      v-model="this.title"
+      readonly
+    ></textarea>
+    <span
+      v-if="this.isFavourite"
+      @click="switchFavourite"
+      class="material-icons-outlined"
+    >
+      star
+    </span>
+    <span v-else @click="switchFavourite" class="material-icons-outlined">
+      star_border
+    </span>
+    <span @click="deleteTodo" class="material-icons-outlined"> clear </span>
   </div>
 </template>
 
 <script>
 import { defineComponent } from 'vue';
-// import {  } from '@/netClient/todoService';
+import { deleteTodo, updateTodo } from '@/netClient/todoService';
 
 export default defineComponent({
   name: 'Todo',
   props: {
-    todoCreatedAt: String,
-    todoDescription: String,
-    todoId: String,
+    todoId: Number,
     todoIsCompleted: Boolean,
     todoIsFavourite: Boolean,
-    todoPriority: Number,
-    todoTitle: String,
-    todoUpdatedAt: String,
-    todoUserId: String
+    todoTitle: String
   },
   methods: {
-    editTodo() {
-      return 1;
+    startEdit() {
+      this.$refs.title.readOnly = false;
+      this.$refs.title.focus();
+      this.isEditing = true;
+    },
+    async stopEdit() {
+      this.$refs.title.value = this.$refs.title.value.trim();
+      this.onInput();
+      this.$refs.title.readOnly = true;
+      this.isEditing = false;
+      await this.updateTodo()
+    },
+    onInput() {
+      this.$refs.title.style.height = 'auto';
+      this.$refs.title.style.height = this.$refs.title.scrollHeight + 'px';
+    },
+    async switchFavourite() {
+      this.isFavourite = !this.isFavourite;
+      await this.updateTodo();
+    },
+    async deleteTodo() {
+      try {
+        await deleteTodo(this.todoId);
+        this.$refs.todo.remove();
+      } catch (error) {
+        alert(error);
+      }
+    },
+    async updateTodo() {
+      try {
+        await updateTodo({
+          id: this.todoId,
+          title: this.title.trim(),
+          isCompleted: this.isCompleted,
+          isFavourite: this.isFavourite
+        });
+      } catch (error) {
+        alert(error);
+      }
     }
   },
   data() {
     return {
-      createdAt: this.todoCreatedAt,
-      description: this.todoDescription,
-      id: this.todoId,
       isCompleted: this.todoIsCompleted,
       isFavourite: this.todoIsFavourite,
-      priority: this.todoPriority,
       title: this.todoTitle,
-      updatedAt: this.todoUpdatedAt,
-      userId: this.todoUserId
+      isEditing: false
     };
+  },
+  mounted () {
+    this.onInput()
   }
 });
 </script>
@@ -55,44 +95,29 @@ export default defineComponent({
 @import '../assets/styles/colors.scss';
 
 .card {
-  width: 200px;
+  width: 400px;
   background: $bg-color;
   color: white;
-  border-radius: 25px;
+  border-radius: 16px;
   padding: 16px;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
 
   textarea {
+    flex-basis: 80%;
+    font-family: inherit;
     background: $bg-color;
     resize: none;
     color: white;
     border: none;
     outline: none;
+    overflow: hidden;
   }
 
-  .title {
-    display: flex;
-
-    > textarea {
-      font-size: 1.5rem;
-    }
-    > h1 {
-      flex-grow: 1;
-      cursor: pointer;
-    }
-    > span {
-      flex-grow: 0.1;
-      font-size: 2rem;
-      user-select: none;
-      cursor: pointer;
-    }
-  }
-
-  > p {
-    padding-top: 10px;
-    font-size: 1.2rem;
+  > span {
+    flex-basis: 10%;
     cursor: pointer;
+    user-select: none;
   }
 }
 </style>

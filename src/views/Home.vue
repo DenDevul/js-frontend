@@ -10,11 +10,17 @@
       ></textarea>
       <span @click="createTodo" class="material-icons-outlined"> add_box </span>
     </div>
-    <li>
-      <todo v-for="todo in this.todos" :key="todo.id" :todoTitle="todo.title">
+    <div class="todo-list">
+      <todo
+        v-for="todo in this.sortTodos(this.todos)"
+        :key="todo.id"
+        :todoTitle="todo.title"
+        :todoId="todo.id"
+        :todoIsCompleted="todo.isCompleted"
+        :todoIsFavourite="todo.isFavourite"
+      >
       </todo>
-    </li>
-    <!-- <todo :todoTitle="'hello'"></todo> -->
+    </div>
   </div>
 </template>
 
@@ -35,11 +41,19 @@ export default defineComponent({
     };
   },
   methods: {
+    sortTodos(todos) {
+      return todos.slice().sort((a, b) => {
+        if (a.isFavourite === b.isFavourite) {
+          return b.updatedAt > a.updatedAt;
+        }
+        return a.isFavourite ? -1 : 1;
+      });
+    },
     async fetchTodos() {
       try {
         this.todos = await getTodos();
       } catch (error) {
-        return error
+        this.todos = [];
       }
     },
     async createTodo() {
@@ -47,6 +61,7 @@ export default defineComponent({
       try {
         const todo = { title: this.newTodo };
         await addTodo(todo);
+        this.newTodo = '';
         await this.fetchTodos();
       } catch (error) {
         console.log({ error });
@@ -63,27 +78,41 @@ export default defineComponent({
 @import '../assets/styles/colors.scss';
 
 .todos {
-  padding: 0 64px;
-
   .add-todo {
     display: flex;
     justify-content: center;
     align-items: center;
+    gap: 1rem;
+    margin-bottom: 32px;
+
+    textarea {
+      border: none;
+      background: #212121;
+      color: white;
+      font-family: inherit;
+      resize: none;
+      width: 450px;
+      height: 150px;
+      border-radius: 16px;
+      padding: 10px;
+    }
+    textarea:focus-visible {
+      outline: 4px solid $primary-color;
+    }
 
     span {
-      font-size: 2rem;
+      font-size: 3rem;
       cursor: pointer;
+      color: #212121;
     }
   }
 
-  textarea {
-    resize: none;
-    width: 400px;
-    border-radius: 4px;
-    padding: 5px;
-  }
-  textarea:focus-visible {
-    outline: 2px solid green;
+  .todo-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 64px;
+    // align-items: center;
   }
 }
 </style>

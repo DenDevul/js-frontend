@@ -60,9 +60,9 @@ export default defineComponent({
       };
       try {
         await doSignup(user);
-        this.$router.push('login');
+        this.$router.push({name: 'login'});
       } catch (error) {
-        console.log({error});
+        alert(error);
       }
     }
   }
