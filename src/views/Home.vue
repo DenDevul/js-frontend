@@ -3,21 +3,21 @@
     <div class="add-todo">
       <textarea
         v-model="this.newTodo"
-        cols="30"
-        rows="10"
         placeholder="Напишите что-нибудь..."
         minlength="1"
       ></textarea>
-      <span @click="createTodo" class="material-icons-outlined"> add_box </span>
+      <div @click="createTodo" class="icon">
+        <span class="material-icons-outlined"> add </span>
+      </div>
     </div>
     <div class="todo-list">
       <todo
         v-for="todo in this.sortTodos(this.todos)"
         :key="todo.id"
-        :todoTitle="todo.title"
-        :todoId="todo.id"
-        :todoIsCompleted="todo.isCompleted"
-        :todoIsFavourite="todo.isFavourite"
+        :todo-title="todo.title"
+        :todo-id="todo.id"
+        :todo-is-completed="todo.isCompleted"
+        :todo-is-favourite="todo.isFavourite"
       >
       </todo>
     </div>
@@ -95,15 +95,10 @@ export default defineComponent({
       height: 150px;
       border-radius: 16px;
       padding: 10px;
+      box-shadow: 0px 0px 10px black;
     }
     textarea:focus-visible {
       outline: 4px solid $primary-color;
-    }
-
-    span {
-      font-size: 3rem;
-      cursor: pointer;
-      color: #212121;
     }
   }
 
@@ -114,5 +109,20 @@ export default defineComponent({
     margin-bottom: 64px;
     // align-items: center;
   }
+}
+
+.icon {
+  background: $bg-color;
+  border-radius: 8px;
+  box-shadow: 0px 0px 2px black;
+  span {
+    color: $primary-color;
+    font-size: 3rem;
+    user-select: none;
+    cursor: pointer;
+  }
+}
+.icon:active {
+  scale: 0.9;
 }
 </style>

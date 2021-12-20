@@ -1,13 +1,9 @@
 import axios from 'axios';
+import { instance } from './config';
 
 export async function getTodos() {
   try {
-    const response = await axios.get('http://localhost:3000/api/todos', {
-      headers: {
-        'Content-Type': 'application/json',
-        'x-access-token': localStorage.accessToken
-      }
-    });
+    const response = await instance.get('todos');
     return response.data;
   } catch (error) {
     console.log({ error });

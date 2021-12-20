@@ -1,7 +1,7 @@
 <template>
-  <div ref="todo" class="card">
+  <div class="card">
     <textarea
-      @input="onInput"
+      @input="trimTodo"
       @click="startEdit"
       @blur="stopEdit"
       ref="title"
@@ -9,6 +9,16 @@
       v-model="this.title"
       readonly
     ></textarea>
+    <span
+      v-if="isCompleted"
+      @click="toggleComplete"
+      class="material-icons-outlined"
+    >
+      check_box
+    </span>
+    <span v-else @click="toggleComplete" class="material-icons-outlined">
+      check_box_outline_blank
+    </span>
     <span
       v-if="this.isFavourite"
       @click="switchFavourite"
@@ -37,20 +47,27 @@ export default defineComponent({
   },
   methods: {
     startEdit() {
+      this.isCompleted = false
+      this.$refs.title.classList.remove('completed')
       this.$refs.title.readOnly = false;
       this.$refs.title.focus();
       this.isEditing = true;
     },
     async stopEdit() {
       this.$refs.title.value = this.$refs.title.value.trim();
-      this.onInput();
+      this.trimTodo();
       this.$refs.title.readOnly = true;
       this.isEditing = false;
-      await this.updateTodo()
+      await this.updateTodo();
     },
-    onInput() {
+    trimTodo() {
       this.$refs.title.style.height = 'auto';
       this.$refs.title.style.height = this.$refs.title.scrollHeight + 'px';
+    },
+    async toggleComplete() {
+      this.isCompleted = !this.isCompleted;
+      this.$refs.title.classList.toggle('completed')
+      await this.updateTodo();
     },
     async switchFavourite() {
       this.isFavourite = !this.isFavourite;
@@ -59,7 +76,7 @@ export default defineComponent({
     async deleteTodo() {
       try {
         await deleteTodo(this.todoId);
-        this.$refs.todo.remove();
+        this.$el.remove();
       } catch (error) {
         alert(error);
       }
@@ -85,8 +102,9 @@ export default defineComponent({
       isEditing: false
     };
   },
-  mounted () {
-    this.onInput()
+  mounted() {
+    this.trimTodo();
+    if (this.isCompleted) this.$refs.title.classList.toggle('completed');
   }
 });
 </script>
@@ -95,16 +113,17 @@ export default defineComponent({
 @import '../assets/styles/colors.scss';
 
 .card {
-  width: 400px;
+  width: 500px;
   background: $bg-color;
   color: white;
   border-radius: 16px;
   padding: 16px;
   display: flex;
   flex-direction: row;
+  align-items: start;
 
   textarea {
-    flex-basis: 80%;
+    flex-basis: 79%;
     font-family: inherit;
     background: $bg-color;
     resize: none;
@@ -115,9 +134,12 @@ export default defineComponent({
   }
 
   > span {
-    flex-basis: 10%;
+    flex-basis: 7%;
     cursor: pointer;
     user-select: none;
   }
+}
+.completed {
+  text-decoration: line-through;
 }
 </style>

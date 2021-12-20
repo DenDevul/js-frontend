@@ -2,37 +2,49 @@
   <div id="nav">
     <div @click="toHome" class="logo"><p>Todo</p></div>
     <div class="nav-items">
-      <router-link @click="logout" class="nav-link" to="login">Выйти</router-link>
+      <router-link v-if="!this.isLogged" class="nav-link" to="login"
+        >Войти</router-link
+      >
+      <router-link v-else @click="logout" class="nav-link" to="login"
+        >Выйти</router-link
+      >
       <router-link class="nav-link" to="info">Инфо</router-link>
     </div>
   </div>
   <div class="content">
-    <router-view>
-    </router-view>
-    
+    <router-view @user-logged="logUser"> </router-view>
   </div>
 </template>
 
-<script >
+<script>
 import { defineComponent } from 'vue';
-import {doLogout} from '@/netClient/authService.js'
+import { doLogout } from '@/netClient/authService.js';
 
 export default defineComponent({
   name: 'App',
   methods: {
+    logUser() {
+      this.isLogged = true;
+    },
     toHome() {
-      const {accessToken} = localStorage
-      if (accessToken) this.$router.push({name: 'home'})
-      else this.$router.push({name: 'login'})
+      const { accessToken } = localStorage;
+      if (accessToken) this.$router.push({ name: 'home' });
+      else this.$router.push({ name: 'login' });
     },
     async logout() {
       try {
-        await doLogout()
-        this.$router.push({name: 'login'})      
+        await doLogout();
+        this.isLogged = false;
+        this.$router.push({ name: 'login' });
       } catch (error) {
-        return 1
+        alert(error);
       }
     }
+  },
+  data() {
+    return {
+      isLogged: false
+    };
   }
 });
 </script>
@@ -55,7 +67,7 @@ export default defineComponent({
   width: 100%;
   box-shadow: 0px 0px 10px black;
   z-index: 2;
-  
+
   .nav-items {
     font-family: 'Ubuntu', sans-serif;
     .nav-link {
@@ -65,6 +77,12 @@ export default defineComponent({
       color: black;
       text-decoration: none;
       margin-right: 16px;
+    }
+    .nav-link:hover {
+      background: rgb(235, 235, 235);
+    }
+    .nav-link:active {
+      background: rgb(214, 214, 214);
     }
   }
 
@@ -77,7 +95,7 @@ export default defineComponent({
     display: flex;
     align-items: center;
     cursor: pointer;
-    
+
     p {
       font-size: 2rem;
       user-select: none;

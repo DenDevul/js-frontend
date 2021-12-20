@@ -1,5 +1,5 @@
-import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
-import Home from '../views/Home.vue'
+import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
+import Home from '../views/Home.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -10,37 +10,42 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/login',
     name: 'login',
-    component: () => import ('../views/Login.vue')
+    component: () => import('../views/Login.vue')
   },
   {
     path: '/signup',
     name: 'signup',
-    component: () => import ('../views/Signup.vue')
+    component: () => import('../views/Signup.vue')
   },
   {
     path: '/info',
-    redirect: '/login'
+    name: 'info',
+    component: () => import('../views/Info.vue')
   },
   {
     path: '/:pathMatch(.*)*',
     redirect: '/home'
   }
-]
+];
 
 const router = createRouter({
   history: createWebHistory(),
   routes
-})
+});
 
 router.beforeEach((to, from, next) => {
-  const {accessToken} = localStorage
-  
-  if(accessToken || to.name === 'login' || to.name === 'signup' || to.path === '/info') {
-    next()
-  } else {
-    next({name: 'login'})
-  }
-  
-})
+  const { accessToken } = localStorage;
 
-export default router
+  if (
+    accessToken ||
+    to.name === 'login' ||
+    to.name === 'signup' ||
+    to.name === 'info'
+  ) {
+    next();
+  } else {
+    next({ name: 'login' });
+  }
+});
+
+export default router;

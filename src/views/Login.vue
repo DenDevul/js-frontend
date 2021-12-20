@@ -48,6 +48,7 @@ export default defineComponent({
       const user = { email: this.email, password: this.password };
       try {
         await doLogin(user);
+        this.$emit('userLogged')
         this.$router.push('/');
       } catch (error) {
         alert(error)
