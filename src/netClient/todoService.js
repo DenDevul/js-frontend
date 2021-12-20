@@ -1,4 +1,3 @@
-import axios from 'axios';
 import { instance } from './config';
 
 export async function getTodos() {
@@ -13,16 +12,7 @@ export async function getTodos() {
 
 export async function addTodo(todo) {
   try {
-    const response = await axios.post(
-      'http://localhost:3000/api/todos',
-      { todo },
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          'x-access-token': localStorage.accessToken
-        }
-      }
-    );
+    const response = await instance.post('todos', { todo });
     return response.data;
   } catch (error) {
     console.log({ error });
@@ -32,11 +22,7 @@ export async function addTodo(todo) {
 
 export async function deleteTodo(id) {
   try {
-    const response = await axios.delete('http://localhost:3000/api/todos/', {
-      headers: {
-        'Content-Type': 'application/json',
-        'x-access-token': localStorage.accessToken
-      },
+    const response = await instance.delete('todos/', {
       params: {
         id: id
       }
@@ -50,14 +36,10 @@ export async function deleteTodo(id) {
 
 export async function updateTodo(todo) {
   try {
-    const response = await axios.patch(
-      'http://localhost:3000/api/todos/',
+    const response = await instance.patch(
+      'todos/',
       { todo },
       {
-        headers: {
-          'Content-Type': 'application/json',
-          'x-access-token': localStorage.accessToken
-        },
         params: {
           id: todo.id
         }

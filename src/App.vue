@@ -45,6 +45,11 @@ export default defineComponent({
     return {
       isLogged: false
     };
+  },
+  beforeMount() {
+    localStorage.getItem('accessToken')
+      ? (this.isLogged = true)
+      : (this.isLogged = false);
   }
 });
 </script>

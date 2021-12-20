@@ -1,13 +1,10 @@
-import axios from 'axios';
+import { instance } from './config';
 
 export async function doSignup(user) {
   try {
-    const response = await axios.post(
-      'http://localhost:3000/api/auth/registration',
-      {
-        user: user
-      }
-    );
+    const response = await instance.post('auth/registration', {
+      user: user
+    });
     return response.data;
   } catch (error) {
     console.log({ error });
@@ -17,7 +14,7 @@ export async function doSignup(user) {
 
 export async function doLogin(user) {
   try {
-    const response = await axios.post('http://localhost:3000/api/auth/login', {
+    const response = await instance.post('auth/login', {
       user: user
     });
     const { accessToken } = response.data;
@@ -31,16 +28,7 @@ export async function doLogin(user) {
 
 export async function doLogout() {
   try {
-    const response = await axios.post(
-      'http://localhost:3000/api/users/logout',
-      {},
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          'x-access-token': localStorage.accessToken
-        }
-      }
-    );
+    const response = await instance.post('users/logout');
     localStorage.removeItem('accessToken');
     return response.data;
   } catch (error) {

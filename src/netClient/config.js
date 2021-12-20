@@ -1,9 +1,20 @@
 import axios from 'axios';
 
 export const instance = axios.create({
-  baseURL: 'http://localhost:3000/api/',
-  headers: {
-    'Content-Type': 'application/json',
-    'x-access-token': localStorage.accessToken
-  }
+  baseURL: 'http://localhost:3000/api/'
 });
+
+instance.interceptors.request.use(
+  (request) => {
+    if (localStorage.getItem('accessToken')) {
+      request.headers = {
+        'Content-Type': 'application/json',
+        'x-access-token': localStorage.accessToken
+      };
+    }
+    return request;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
