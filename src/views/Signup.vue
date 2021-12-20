@@ -54,9 +54,9 @@ export default defineComponent({
   methods: {
     async onSubmit() {
       const user = {
-        email: this.email,
-        password: this.password,
-        login: this.login
+        email: this.email.trim(),
+        password: this.password.trim(),
+        login: this.login.trim()
       };
       try {
         await doSignup(user);
