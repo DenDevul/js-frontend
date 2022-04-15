@@ -2,7 +2,7 @@
   <div class="todos">
     <div class="add-todo">
       <textarea
-        v-model="this.newTodo"
+        v-model="newTodo"
         placeholder="Напишите что-нибудь..."
         minlength="1"
       ></textarea>
@@ -12,12 +12,13 @@
     </div>
     <div class="todo-list">
       <todo
-        v-for="todo in this.sortTodos(this.todos)"
+        v-for="todo in sortedTodos"
         :key="todo.id"
         :todo-title="todo.title"
         :todo-id="todo.id"
         :todo-is-completed="todo.isCompleted"
         :todo-is-favourite="todo.isFavourite"
+        @refresh="fetchTodos"
       >
       </todo>
     </div>
@@ -40,15 +41,19 @@ export default defineComponent({
       todos: []
     };
   },
-  methods: {
-    sortTodos(todos) {
-      return todos.slice().sort((a, b) => {
+  computed: {
+    sortedTodos() {
+      const todos = [...this.todos]
+      const sorted = todos.sort((a, b) => {
         if (a.isFavourite === b.isFavourite) {
           return b.updatedAt > a.updatedAt;
         }
         return a.isFavourite ? -1 : 1;
       });
-    },
+      return sorted
+    }
+  },
+  methods: {
     async fetchTodos() {
       try {
         this.todos = await getTodos();

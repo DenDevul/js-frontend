@@ -6,7 +6,7 @@ export const instance = axios.create({
 
 instance.interceptors.request.use(
   (request) => {
-    if (localStorage.getItem('accessToken')) {
+    if (localStorage.accessToken) {
       request.headers = {
         'Content-Type': 'application/json',
         'x-access-token': localStorage.accessToken

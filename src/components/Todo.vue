@@ -89,6 +89,7 @@ export default defineComponent({
           isCompleted: this.isCompleted,
           isFavourite: this.isFavourite
         });
+        this.$emit('refresh')
       } catch (error) {
         alert(error);
       }
